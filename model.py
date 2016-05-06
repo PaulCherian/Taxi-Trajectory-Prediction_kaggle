@@ -15,20 +15,24 @@ from scipy import ndimage
 def datetime_parser(dt):
     return datetime.date.fromtimestamp(float(dt))
 
+#reading train csv files
 data=pd.read_csv('train.csv',parse_dates=[5],date_parser=datetime_parser,usecols=[0,1,2,3,4,5,6,7])
 data.set_index(['TRIP_ID'],inplace=True)
 
+#setting basemap coordinate 
 bm=Basemap(llcrnrlat=37,llcrnrlon=-9.5,urcrnrlat=41.5 ,urcrnrlon=-6.5,epsg=3763)
 x=math.ceil(bm.xmax/100)
 y=math.ceil(bm.ymax/100)
 
 train_path={}
 
-grid("train.csv",train_path,bm)
+#dividing into grids
+#grid("train.csv",train_path,bm)
 
+#binning test paths into grids
 test_path={}
 fn.grid(open("test.csv",'r'),test_path,bm)
-'''
+
 test_match=[]
 for i in test_path:
     nearest_n={}  
@@ -64,8 +68,10 @@ def mp_fn(j,nearest_n,bm,test):
         a=np.array(list(train.values())[0][k:n+k])
         dist.append(np.sum(np.sqrt(np.diagonal(np.dot(a-b,np.transpose(a-b))))))
     nearest_n[j.split(",",8)[0].strip('"')]=min(dist)
-    return(True)'''
+    return(True)
 
+'''
+working on this part- vectorization 
 def filter(train,test):
     return(np.sum(np.sqrt(np.diagonal(np.dot(train-test,np.transpose(train-test))))))
 
@@ -113,6 +119,7 @@ def filter_p(x):
     return(1)
 a=np.array([(1,2),(2,3),(3,4),(2,3),(4,5)])    
 c=ndimage.generic_filter(a,filter_p,size=(2,2),mode='constant')
+'''
     
             
         
